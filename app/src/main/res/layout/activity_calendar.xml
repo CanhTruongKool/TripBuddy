@@ -42,7 +42,7 @@
             android:text="@string/schedule"
             android:textAlignment="center"
             android:textColor="#397D54"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <!-- Cancel Text -->

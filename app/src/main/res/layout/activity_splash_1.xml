@@ -43,7 +43,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
             <!-- Main Title -->
 
             <!-- Subtitle -->
@@ -52,8 +51,9 @@
                 android:id="@+id/mainTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="8dp"
                 android:fontFamily="@font/urbanist_regular"
                 android:text="@string/life_is_short_and_the_world_is_wide"
                 android:textAlignment="center"
@@ -76,39 +76,41 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal">
 
                 <!-- Example: Three page indicators -->
                 <View
                     android:layout_width="24dp"
                     android:layout_height="8dp"
-                    android:background="@drawable/circle_indicator_active"
-                    android:layout_marginEnd="4dp" />
+                    android:layout_marginEnd="4dp"
+                    android:background="@drawable/circle_indicator_active" />
 
                 <View
                     android:layout_width="8dp"
                     android:layout_height="8dp"
-                    android:background="@drawable/circle_indicator_inactive"
-                    android:layout_marginEnd="4dp" />
+                    android:layout_marginEnd="4dp"
+                    android:background="@drawable/circle_indicator_inactive" />
 
                 <View
                     android:layout_width="8dp"
                     android:layout_height="8dp"
-                    android:background="@drawable/circle_indicator_inactive"
-                    android:layout_marginEnd="4dp" />
+                    android:layout_marginEnd="4dp"
+                    android:background="@drawable/circle_indicator_inactive" />
             </LinearLayout>
 
             <!-- Get Started Button -->
             <Button
                 android:id="@+id/getStartedButton"
-                android:layout_width="match_parent"
+                android:layout_width="229dp"
                 android:layout_height="wrap_content"
-                android:text="@string/get_started"
-                android:fontFamily="@font/urbanist_regular"
                 android:backgroundTint="#397D54"
+                android:layout_gravity="center"
+                android:fontFamily="@font/urbanist_regular"
+                android:text="@string/get_started"
                 android:textColor="@android:color/white"
+                android:layout_marginBottom="5dp"
                 tools:ignore="VisualLintButtonSize" />
 
         </LinearLayout>

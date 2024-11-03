@@ -42,6 +42,7 @@
         android:textSize="24sp"
         android:layout_marginTop="20dp"
         android:textStyle="bold"
+        android:textColor="#397D54"
         android:fontFamily="@font/urbanist_bold"
         app:layout_constraintBottom_toBottomOf="@id/backButton"
         app:layout_constraintEnd_toStartOf="@id/editProfileButton"
@@ -70,8 +71,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/full_name"
+        android:layout_marginTop="15dp"
         android:textSize="20sp"
         android:textStyle="bold"
+        android:textColor="#397D54"
         android:textAlignment="center"
         android:fontFamily="@font/urbanist_regular"
         app:layout_constraintTop_toBottomOf="@id/profilePicture"
@@ -86,6 +89,7 @@
         android:textAlignment="center"
         android:textColor="#546E7A"
         android:textSize="14sp"
+        android:layout_marginTop="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:fontFamily="@font/urbanist_regular"
@@ -96,7 +100,7 @@
         android:id="@+id/statsLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="20dp"
         android:baselineAligned="false"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@id/profileEmail"
@@ -117,6 +121,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/travel_value"
                 android:textSize="18sp"
+                android:textColor="#397D54"
                 android:fontFamily="@font/urbanist_regular"
                 android:textStyle="bold" />
 
@@ -140,6 +145,7 @@
                 android:id="@+id/travelTrips"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="#397D54"
                 android:text="@string/travel_trip_value"
                 android:fontFamily="@font/urbanist_regular"
                 android:textSize="18sp"
@@ -165,6 +171,7 @@
                 android:id="@+id/bucketList"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="#397D54"
                 android:text="@string/bucket_value"
                 android:textSize="18sp"
                 android:fontFamily="@font/urbanist_regular"
@@ -185,7 +192,7 @@
         android:id="@+id/profileOptionsLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="20dp"
         android:background="#F5F5F5"
         android:orientation="vertical"
         android:padding="16dp"
@@ -220,6 +227,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
+                android:textColor="#000000"
                 android:text="@string/profile"
                 android:fontFamily="@font/urbanist_regular"
                 android:textSize="16sp" />
@@ -262,6 +270,7 @@
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:fontFamily="@font/urbanist_regular"
+                android:textColor="#000000"
                 android:text="@string/bookmarked"
                 android:textSize="16sp" />
 
@@ -303,6 +312,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/urbanist_regular"
                 android:gravity="center_vertical"
+                android:textColor="#000000"
                 android:text="@string/previous_trips"
                 android:textSize="16sp" />
 
@@ -343,6 +353,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
+                android:textColor="#000000"
                 android:text="@string/settings"
                 android:fontFamily="@font/urbanist_regular"
                 android:textSize="16sp" />
@@ -382,6 +393,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
+                android:textColor="#000000"
+                android:fontFamily="@font/urbanist_regular"
                 android:text="@string/version"
                 android:textSize="16sp" />
 
