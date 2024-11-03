@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:padding="16dp"
-        app:cardCornerRadius="24dp"
+        app:cardCornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="16dp"
-                android:fontFamily="@font/urbanist_bold"
+                android:fontFamily="@font/urbanist_regular"
                 android:text="@string/splash_2"
                 android:textAlignment="center"
                 android:textColor="@android:color/black"
@@ -104,10 +104,12 @@
             <!-- Get Started Button -->
             <Button
                 android:id="@+id/getStartedButton"
-                android:layout_width="match_parent"
+                android:layout_width="229dp"
+                android:layout_gravity="center"
                 android:layout_height="wrap_content"
                 android:text="@string/next"
                 android:fontFamily="@font/urbanist_regular"
+                android:layout_marginBottom="5dp"
                 android:backgroundTint="#397D54"
                 android:textColor="@android:color/white"
                 tools:ignore="VisualLintButtonSize" />

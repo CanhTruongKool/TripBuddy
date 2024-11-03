@@ -31,6 +31,7 @@
             android:layout_width="wrap_content"
             android:fontFamily="@font/urbanist_bold"
             android:layout_height="wrap_content"
+            android:textColor="#397D54"
             android:text="@string/notification_header"
             android:textStyle="bold"
             android:textSize="16sp" />
@@ -53,6 +54,6 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/urbanist_light"
         android:text="@string/notification_time"
-        android:textColor="#546E7A"
+        android:textColor="#397D54"
         android:textSize="12sp" />
 </LinearLayout>

@@ -1,14 +1,14 @@
 <resources>
     <string name="app_name">TripBuddy</string>
-    <string name="forget_password">Forget Password?</string>
+    <string name="forget_password">Forget Password ?</string>
     <string name="sign_in">Sign In</string>
-    <string name="don_t_have_an_account_sign_up">Don\'t have an account? Sign up</string>
+    <string name="don_t_have_an_account_sign_up">Don\'t have an account ? Sign up</string>
     <string name="or_connect">Or connect</string>
     <string name="facebook">Facebook</string>
     <string name="instagram">Instagram</string>
     <string name="twitter">Twitter</string>
     <string name="password">Password</string>
-    <string name="please_sign_in_to_continue_our_app">Please sign in to Buddy Trip</string>
+    <string name="please_sign_in_to_continue_our_app">Please sign in to TripBuddy</string>
     <string name="sign_in_now">Sign in now</string>
     <string name="back">Back</string>
     <string name="sign_up_now">Sign up now</string>
@@ -74,7 +74,7 @@
     <string name="get_started">Get Started</string>
     <string name="life_is_short_and_the_world_is_wide">Life is short and the world is wide</string>
     <string name="splash_2">It’s a big world out there go explore</string>
-    <string name="splash_3">People don’t take trips, trips take people</string>
+    <string name="splash_3">Take trips with people</string>
     <string name="splash_title_3">To get the best of your adventure you just need to leave and go where you like. we are waiting for you</string>
     <string name="splash_title">At Friends tours and travel, we customize reliable and trustworthy educational tours to destinations all over the world</string>
     <string name="splash_title_2">To get the best of your adventure you just need to leave and go where you like. we are waiting for you</string>

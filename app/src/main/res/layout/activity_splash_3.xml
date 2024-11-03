@@ -31,19 +31,17 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:background="@android:color/transparent"
         android:padding="16dp"
+        app:cardCornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:cardCornerRadius="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/backgroundImage">
 
         <!-- Text Content Inside Card -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <!-- Main Title -->
@@ -56,8 +54,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginBottom="8dp"
-                android:fontFamily="@font/urbanist_bold"
-                android:text="@string/life_is_short_and_the_world_is_wide"
+                android:fontFamily="@font/urbanist_regular"
+                android:text="@string/splash_3"
                 android:textAlignment="center"
                 android:textColor="@android:color/black"
                 android:textSize="20sp"
@@ -69,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:fontFamily="@font/urbanist_lightitalic"
-                android:text="@string/splash_title"
+                android:text="@string/splash_title_3"
                 android:textAlignment="center"
                 android:textColor="#757575"
                 android:textSize="14sp" />
@@ -78,38 +76,40 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="16dp"
-                android:orientation="horizontal">
+                android:layout_marginBottom="16dp">
 
                 <!-- Example: Three page indicators -->
                 <View
-                    android:layout_width="8dp"
-                    android:layout_height="8dp"
-                    android:layout_marginEnd="4dp"
-                    android:background="@drawable/circle_indicator_inactive" />
-
-                <View
-                    android:layout_width="8dp"
-                    android:layout_height="8dp"
-                    android:layout_marginEnd="4dp"
-                    android:background="@drawable/circle_indicator_inactive" />
-
-                <View
                     android:layout_width="24dp"
                     android:layout_height="8dp"
-                    android:layout_marginEnd="4dp"
-                    android:background="@drawable/circle_indicator_active" />
+                    android:background="@drawable/circle_indicator_active"
+                    android:layout_marginEnd="4dp" />
+
+                <View
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:background="@drawable/circle_indicator_inactive"
+                    android:layout_marginEnd="4dp" />
+
+                <View
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:background="@drawable/circle_indicator_inactive"
+                    android:layout_marginEnd="4dp" />
             </LinearLayout>
 
             <!-- Get Started Button -->
             <Button
                 android:id="@+id/getStartedButton"
-                android:layout_width="match_parent"
+                android:layout_width="229dp"
+                android:layout_gravity="center"
                 android:layout_height="wrap_content"
-                android:backgroundTint="#397D54"
-                android:fontFamily="@font/urbanist_regular"
                 android:text="@string/next"
+                android:fontFamily="@font/urbanist_regular"
+                android:backgroundTint="#397D54"
+                android:layout_marginBottom="5dp"
                 android:textColor="@android:color/white"
                 tools:ignore="VisualLintButtonSize" />
 

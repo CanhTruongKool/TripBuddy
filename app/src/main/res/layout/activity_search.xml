@@ -46,6 +46,7 @@
             android:contentDescription="@string/search"
             android:fontFamily="@font/urbanist_bold"
             android:text="@string/search"
+            android:textColor="#397D54"
             android:textAlignment="center"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -60,7 +61,7 @@
             android:fontFamily="@font/urbanist_regular"
             android:textAlignment="textEnd"
             android:textColor="#397D54"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -96,8 +97,8 @@
         <!-- Search Icon -->
         <ImageView
             android:id="@+id/searchIcon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="10dp"
             android:background="#FFFFFF"
@@ -112,7 +113,9 @@
         android:layout_height="550dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchLayout"/>
+        app:layout_constraintTop_toBottomOf="@+id/searchLayout"
+        app:layout_constraintVertical_bias="0.442" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
