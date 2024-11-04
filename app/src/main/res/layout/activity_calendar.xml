@@ -54,9 +54,9 @@
             android:contentDescription="@string/cancel"
             android:fontFamily="@font/urbanist_light"
             android:text="@string/cancel"
-            android:textAlignment="textEnd"
+            android:textAlignment="center"
             android:textColor="#397D54"
-            android:textSize="18sp" />
+            android:textSize="12sp" />
     </LinearLayout>
 
     <!-- Selected Date Layout -->

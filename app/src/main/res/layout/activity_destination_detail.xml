@@ -59,7 +59,7 @@
                 android:text="@string/detail"
                 android:fontFamily="@font/urbanist_bold"
                 android:textAlignment="center"
-                android:textColor="#039BE5"
+                android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -89,7 +89,7 @@
         android:layout_marginEnd="16dp"
         android:text="@string/example_location"
         android:fontFamily="@font/urbanist_bold"
-        android:textColor="@color/black"
+        android:textColor="#397D54"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"

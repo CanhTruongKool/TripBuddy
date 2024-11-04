@@ -28,6 +28,8 @@
             android:layout_height="wrap_content"
             android:text="@string/niladri_reservoir"
             android:padding="8dp"
+            android:textColor="#397D54"
+            android:textSize="20sp"
             android:fontFamily="@font/urbanist_bold"
             android:textStyle="bold" />
 

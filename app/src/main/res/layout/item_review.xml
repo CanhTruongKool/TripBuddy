@@ -29,6 +29,7 @@
             android:layout_height="wrap_content"
             android:text="@string/user_avatar"
             android:textStyle="bold"
+            android:textColor="#397D54"
             android:fontFamily="@font/urbanist_bold"
             android:textSize="16sp"/>
 
@@ -60,5 +61,5 @@
         android:fontFamily="@font/urbanist_italic"
         android:text="@string/example_time"
         android:textSize="12sp"
-        android:textColor="#757575"/>
+        android:textColor="#397D54"/>
 </LinearLayout>

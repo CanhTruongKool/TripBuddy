@@ -33,8 +33,11 @@ public class ProfileActivity extends Fragment {
 
         ImageView editTextView = view.findViewById(R.id.editProfileButton);
         String email = UserSession.getInstance().getUser().getEmail();
+        String username = UserSession.getInstance().getUser().getUsername();
         TextView profileName = view.findViewById(R.id.profileName);
-        profileName.setText(email);
+        profileName.setText(username);
+        TextView profileEmail = view.findViewById(R.id.profileEmail);
+        profileEmail.setText(username);
         editTextView.setOnClickListener(views -> {
            Intent intent = new Intent(getActivity(), EditProfileActivity.class);
            startActivity(intent);

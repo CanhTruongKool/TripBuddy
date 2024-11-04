@@ -33,6 +33,7 @@
             android:layout_height="wrap_content"
             android:text="@string/notification_header"
             android:textStyle="bold"
+            android:textColor="#397D54"
             android:textSize="16sp" />
 
         <!-- Subtitle (e.g., Get 60% off in our first booking) -->

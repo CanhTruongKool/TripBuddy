@@ -59,9 +59,9 @@
             android:contentDescription="@string/cancel"
             android:text="@string/cancel"
             android:fontFamily="@font/urbanist_regular"
-            android:textAlignment="textEnd"
+            android:textAlignment="center"
             android:textColor="#397D54"
-            android:textSize="18sp" />
+            android:textSize="12sp" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

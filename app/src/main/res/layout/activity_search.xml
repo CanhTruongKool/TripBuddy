@@ -48,6 +48,7 @@
             android:text="@string/search"
             android:textAlignment="center"
             android:textSize="18sp"
+            android:textColor="#397D54"
             android:textStyle="bold" />
 
         <TextView
@@ -58,9 +59,9 @@
             android:contentDescription="@string/cancel"
             android:text="@string/cancel"
             android:fontFamily="@font/urbanist_regular"
-            android:textAlignment="textEnd"
+            android:textAlignment="center"
             android:textColor="#397D54"
-            android:textSize="18sp" />
+            android:textSize="12sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -96,8 +97,8 @@
         <!-- Search Icon -->
         <ImageView
             android:id="@+id/searchIcon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="10dp"
             android:background="#FFFFFF"

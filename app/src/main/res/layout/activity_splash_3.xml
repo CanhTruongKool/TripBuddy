@@ -105,11 +105,12 @@
             <!-- Get Started Button -->
             <Button
                 android:id="@+id/getStartedButton"
-                android:layout_width="match_parent"
+                android:layout_width="266dp"
                 android:layout_height="wrap_content"
-                android:backgroundTint="#397D54"
+                android:text="@string/get_started"
+                android:layout_gravity="center"
                 android:fontFamily="@font/urbanist_regular"
-                android:text="@string/next"
+                android:backgroundTint="#397D54"
                 android:textColor="@android:color/white"
                 tools:ignore="VisualLintButtonSize" />
 

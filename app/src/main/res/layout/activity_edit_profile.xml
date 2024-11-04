@@ -28,7 +28,7 @@
         android:text="@string/done"
         android:textColor="#397D54"
         android:fontFamily="@font/urbanist_light"
-        android:textSize="20sp"
+        android:textSize="12sp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -43,6 +43,7 @@
         android:text="@string/edit_profile"
         android:textSize="18sp"
         android:textStyle="bold"
+        android:textColor="#397D54"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/backButton" />
@@ -65,7 +66,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/change_profile_picture"
-        android:textColor="#397D54"
+        android:textColor="@color/black"
         android:textSize="14sp"
         android:fontFamily="@font/urbanist_light"
         app:layout_constraintTop_toBottomOf="@id/profileImage"
@@ -83,7 +84,7 @@
         android:minHeight="48dp"
         android:fontFamily="@font/urbanist_bold"
         android:text="@string/firstname"
-        android:textColor="#546E7A"
+        android:textColor="@color/black"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/changeProfilePicture"
@@ -115,7 +116,7 @@
         android:layout_marginTop="16dp"
         android:fontFamily="@font/urbanist_bold"
         android:text="@string/last_name"
-        android:textColor="#546E7A"
+        android:textColor="@color/black"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/firstNameInput" />
@@ -147,7 +148,7 @@
         android:layout_marginTop="16dp"
         android:fontFamily="@font/urbanist_bold"
         android:text="@string/location"
-        android:textColor="#546E7A"
+        android:textColor="@color/black"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/lastNameInput" />
@@ -179,7 +180,7 @@
         android:layout_marginTop="16dp"
         android:fontFamily="@font/urbanist_bold"
         android:text="@string/mobile_number"
-        android:textColor="#546E7A"
+        android:textColor="@color/black"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/locationInput" />

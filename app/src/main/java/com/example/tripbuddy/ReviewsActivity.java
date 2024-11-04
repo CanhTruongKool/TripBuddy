@@ -110,7 +110,6 @@ public class ReviewsActivity extends AppCompatActivity {
 
     private void showReviewDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Write Your Review");
         LocalDateTime currentDateTime = LocalDateTime.now();
         String currentDate = currentDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String currentTime = currentDateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));

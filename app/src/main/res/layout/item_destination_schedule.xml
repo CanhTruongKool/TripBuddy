@@ -35,5 +35,6 @@
         android:id="@+id/checkInButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="#397D54"
         android:text="@string/check_in"/>
 </LinearLayout>

@@ -9,8 +9,8 @@
     android:background="?android:attr/windowBackground"
     app:menu="@menu/bottom_nav_menu"
     android:fontFamily="@font/urbanist_regular"
-    app:itemIconTint="@android:color/holo_green_light"
-    app:itemTextColor="@android:color/holo_green_light"
+    app:itemIconTint="#397D54"
+    app:itemTextColor="#397D54"
     android:elevation="8dp"
     android:padding="0dp"
     tools:ignore="VisualLintBottomNav" />
