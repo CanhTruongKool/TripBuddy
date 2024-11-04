@@ -40,6 +40,16 @@
             android:fontFamily="@font/urbanist_italic"
             android:text="@string/example_review"
             android:textSize="14sp" />
+
+        <!-- Rating value -->
+        <TextView
+            android:id="@+id/tvRatingValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/example_rate"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:textColor="#FFA500" />
     </LinearLayout>
 
     <!-- Timestamp -->
@@ -48,7 +58,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/urbanist_italic"
-        android:text="@string/exampl_time"
+        android:text="@string/example_time"
         android:textSize="12sp"
         android:textColor="#757575"/>
 </LinearLayout>

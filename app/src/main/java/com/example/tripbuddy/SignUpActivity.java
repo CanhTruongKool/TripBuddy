@@ -10,12 +10,17 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.tripbuddy.Models.User;
+import com.example.tripbuddy.ViewModel.UserViewModel;
+
 public class SignUpActivity extends AppCompatActivity {
 
     EditText nameEditText, emailEditText, passwordEditText;
     Button signUpButton;
     TextView alreadyHaveAccountText;
     ImageView backButton;
+
+    private UserViewModel userViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +35,9 @@ public class SignUpActivity extends AppCompatActivity {
         alreadyHaveAccountText = findViewById(R.id.alreadyHaveAccountText);
         backButton = findViewById(R.id.backButton);
 
+        // Initialize the ViewModel
+        userViewModel = new UserViewModel(getApplication());
+
         // Sign-Up button click
         signUpButton.setOnClickListener(view -> {
             String name = nameEditText.getText().toString();
@@ -39,8 +47,14 @@ public class SignUpActivity extends AppCompatActivity {
             if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(SignUpActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
             } else {
-                // Call API to sign up the user (Retrofit or HttpUrlConnection)
-                registerUser(name, email, password);
+                // Create a User object
+                User user = new User(name, email, password);
+                // Insert the user into the repository
+                userViewModel.insert(user);
+                Toast.makeText(this, "User registered successfully!", Toast.LENGTH_SHORT).show();
+                // Navigate to Login Activity
+                Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -55,10 +69,4 @@ public class SignUpActivity extends AppCompatActivity {
             startActivity(intent);
         });
     }
-
-    private void registerUser(String name, String email, String password) {
-        // API Call Logic (Retrofit or HttpUrlConnection)
-        Toast.makeText(this, "User registered successfully!", Toast.LENGTH_SHORT).show();
-    }
 }
-

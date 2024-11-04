@@ -48,6 +48,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         private final TextView userNameTextView;
         private final TextView reviewTextView;
         private final TextView timeTextView;
+        private final TextView ratingTextView;
 
         // Constructor for the ViewHolder
         public ReviewViewHolder(@NonNull View itemView) {
@@ -55,6 +56,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
             userNameTextView = itemView.findViewById(R.id.tvUsername); // ID of user name TextView in item_review layout
             reviewTextView = itemView.findViewById(R.id.tvReviewText); // ID of review TextView in item_review layout
             timeTextView = itemView.findViewById(R.id.tvReviewTime); // ID of time TextView in item_review layout
+            ratingTextView = itemView.findViewById(R.id.tvRatingValue); // ID of time TextView in item_review layout
         }
 
         // Method to bind data to the views
@@ -62,6 +64,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
             userNameTextView.setText(review.getUsername());
             reviewTextView.setText(review.getReviewText());
             timeTextView.setText(review.getReviewTime());
+            ratingTextView.setText(String.format("%s ", review.getRating()));
         }
     }
 }

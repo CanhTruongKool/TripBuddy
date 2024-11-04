@@ -1,8 +1,10 @@
 package com.example.tripbuddy.Adapters;
 
+import com.example.tripbuddy.Models.User;
+
 public class UserSession {
     private static UserSession instance;
-    private String email;
+    private User user;
 
     private UserSession() {}
 
@@ -13,11 +15,12 @@ public class UserSession {
         return instance;
     }
 
-    public String getEmail() {
-        return email;
+    public User getUser() {
+        return user;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUser(User userID) {
+        this.user = userID;
     }
+
 }

@@ -5,9 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.tripbuddy.DestinationDetailActivity;
 import com.example.tripbuddy.R;
 
@@ -15,10 +17,10 @@ import java.util.List;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
 
-    private final List<Integer> imageList; // List of image resource IDs
+    private final List<String> imageList; // List of image URLs
     private final Context context;
 
-    public ImageAdapter(Context context, List<Integer> imageList) {
+    public ImageAdapter(Context context, List<String> imageList) {
         this.context = context;
         this.imageList = imageList;
     }
@@ -48,13 +50,16 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
             imageView = itemView.findViewById(R.id.imageView);
         }
 
-        public void bind(int imageResId) {
-            imageView.setImageResource(imageResId);
+        public void bind(String imageUrl) {
+            // Use Glide to load the image into the ImageView
+            Glide.with(context)
+                    .load(imageUrl)
+                    .into(imageView);
+
+            // Set an OnClickListener to show the full-screen image when clicked
             itemView.setOnClickListener(v -> {
-                // Show full-screen image when clicked
-                ((DestinationDetailActivity) context).showFullScreenImage(imageResId);
+                // Show full-screen image by invoking the method in the destination activity
             });
         }
     }
 }
-

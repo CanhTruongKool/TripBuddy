@@ -13,29 +13,31 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.tripbuddy.API.ApiCallTask;
-import com.example.tripbuddy.API.ApiCallback;
 import com.example.tripbuddy.Adapters.DestinationAdapter;
 import com.example.tripbuddy.Adapters.UserSession;
+import com.example.tripbuddy.Models.Destination;
+import com.example.tripbuddy.ViewModel.DestinationViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import org.json.JSONArray;
-import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
-import com.example.tripbuddy.Models.Destination;
 
-public class HomeActivity extends Fragment implements ApiCallback {
+public class HomeActivity extends Fragment {
 
-    // Initialize destination data
     private final List<Destination> destinationList = new ArrayList<>();
     private RecyclerView destinationRecyclerView;
+    private DestinationAdapter destinationAdapter;
+    private DestinationViewModel destinationViewModel;
+
     public HomeActivity() {
         super(R.layout.activity_home);
     }
-
 
     @Nullable
     @Override
@@ -44,9 +46,10 @@ public class HomeActivity extends Fragment implements ApiCallback {
 
         // Set username
         TextView username = view.findViewById(R.id.textHeader);
-        TextView viewAllText = view.findViewById(R.id.viewAllText);
-        String name = UserSession.getInstance().getEmail();
+        String name = UserSession.getInstance().getUser().getUsername();
+        TextView viewAll = view.findViewById(R.id.viewAllText);
         username.setText(name);
+
         ImageView profileImageView = view.findViewById(R.id.profileImageView);
         ImageView notificationImageView = view.findViewById(R.id.notificationIcon);
 
@@ -54,37 +57,20 @@ public class HomeActivity extends Fragment implements ApiCallback {
         destinationRecyclerView = view.findViewById(R.id.destinationRecyclerView);
         destinationRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
+        // Initialize ViewModel
+        destinationViewModel = new DestinationViewModel(requireActivity().getApplication());
+
         // Load destination data
         loadDestinationData();
 
-        // Setup search all
-        @SuppressLint("CutPasteId") TextView searchAll = view.findViewById(R.id.viewAllText);
-
-        searchAll.setOnClickListener(v -> {
-            // Chuyển đổi sang SecondFragment
-            SearchActivity secondFragment = new SearchActivity();
-            requireActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, secondFragment) // fragment_container là ID của container trong Activity
-                    .addToBackStack(null) // Tùy chọn thêm vào backstack để quay lại fragment trước đó
-                    .commit();
-
-            // Cập nhật mục đã chọn trên BottomNavigationView
-            BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottomNavigationView);
-            bottomNavigationView.setSelectedItemId(R.id.search);
-        });
-
-
+        // Setup click listeners for other UI elements (like profile, notifications)
         profileImageView.setOnClickListener(v -> {
-            // Chuyển đổi sang SecondFragment
             ProfileActivity secondFragment = new ProfileActivity();
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragment_container, secondFragment)
                     .addToBackStack(null)
-                    .commitAllowingStateLoss();
-
-            // Cập nhật mục đã chọn trên BottomNavigationView
+                    .commit();
             BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottomNavigationView);
             bottomNavigationView.setSelectedItemId(R.id.profile);
         });
@@ -94,49 +80,41 @@ public class HomeActivity extends Fragment implements ApiCallback {
             startActivity(intent);
         });
 
+        viewAll.setOnClickListener(v -> {
+            // Navigate to SearchActivity
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new SearchActivity()) // Replace with your SearchActivity
+                    .addToBackStack(null) // Add to back stack to allow back navigation
+                    .commit();
+        });
         return view;
     }
 
-    // This method will load dummy data, replace it with real data fetching logic
     private void loadDestinationData() {
-        // API URL for getting the list of users
-        String apiUrl = "http://localhost:5000/api/places";  // Replace with your local or server URL
-        new ApiCallTask(this).execute(apiUrl);
-    }
-
-    @Override
-    public void onSuccess(String result) {
-        updateUserList(result);
-    }
-
-    @Override
-    public void onError(String error) {
-        Toast.makeText(getContext(), "Error fetching Destinations: " + error, Toast.LENGTH_SHORT).show();
-    }
-
-    private void updateUserList(String jsonResult) {
-        try {
-            JSONArray jsonArray = new JSONArray(jsonResult);
-            destinationList.clear(); // Clear the previous data
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject desObject = jsonArray.getJSONObject(i);
-                String id = desObject.getString("PlcKey");
-                String name = desObject.getString("PlcName");
-                String description = desObject.getString("Description");
-                double longitude = desObject.getDouble("Description");
-                double latitude  = desObject.getDouble("Description");
-
-                Destination destination = new Destination(id, name,description,R.drawable.sample_destination, longitude, latitude  );
-                destinationList.add(destination); // Add to the list
+        destinationViewModel.getAllDestinations().observe(getViewLifecycleOwner(), new Observer<List<Destination>>() {
+            @Override
+            public void onChanged(List<Destination> destinations) {
+                if (destinations != null && !destinations.isEmpty()) {
+                    destinationList.clear();
+                    // Get only the first three destinations
+                    destinationList.addAll(destinations.subList(0, Math.min(3, destinations.size())));
+                    updateRecyclerView();
+                } else {
+                    Toast.makeText(getContext(), "No destinations found", Toast.LENGTH_SHORT).show();
+                }
             }
-            // Setup adapter
-            DestinationAdapter destinationAdapter = new DestinationAdapter(destinationList, getContext());
+        });
+    }
+
+
+    private void updateRecyclerView() {
+        if (destinationAdapter == null) {
+            destinationAdapter = new DestinationAdapter(destinationList, this.getContext());
             destinationRecyclerView.setAdapter(destinationAdapter);
-            destinationAdapter.notifyDataSetChanged(); // Notify the adapter to refresh the list
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(getContext(), "Failed to parse user data", Toast.LENGTH_SHORT).show();
+        } else {
+            destinationAdapter.notifyDataSetChanged();
         }
     }
+
 }

@@ -111,6 +111,12 @@
     <string name="down_arrow">down arrow</string>
     <string name="q_and_a">Q and A</string>
     <string name="qna">QnA</string>
+    <string name="example_time">today</string>
+    <string name="example_rate">Rating: 4.5</string>
+    <string name="select_date_and_time">Select Date and Time</string>
+    <string name="check_in">Check In</string>
+    <string name="date">Date: YYYY-MM-DD</string>
+    <string name="time">Time: HH:MM</string>
     "
     />
 </resources>

@@ -32,7 +32,7 @@ public class ProfileActivity extends Fragment {
         backButton.setOnClickListener(this::onClick);
 
         ImageView editTextView = view.findViewById(R.id.editProfileButton);
-        String email = UserSession.getInstance().getEmail();
+        String email = UserSession.getInstance().getUser().getEmail();
         TextView profileName = view.findViewById(R.id.profileName);
         profileName.setText(email);
         editTextView.setOnClickListener(views -> {

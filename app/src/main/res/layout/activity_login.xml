@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
+    android:paddingTop="24dp"
     tools:context=".LoginActivity">
 
     <!-- Title Sign In Now -->
@@ -21,28 +22,26 @@
         android:id="@+id/signInTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
         android:fontFamily="@font/urbanist_bold"
         android:text="@string/sign_in_now"
         android:textColor="@android:color/holo_green_dark"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/signInSubtitle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/signInSubtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="44dp"
         android:autofillHints=""
+        android:fontFamily="@font/urbanist_regular"
         android:text="@string/please_sign_in_to_continue_our_app"
         android:textColor="#546E7A"
         android:textSize="16sp"
-        android:fontFamily="@font/urbanist_regular"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/signInTitle" />
 

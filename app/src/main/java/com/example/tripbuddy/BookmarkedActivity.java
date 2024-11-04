@@ -4,30 +4,31 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.tripbuddy.API.ApiCallTask;
-import com.example.tripbuddy.API.ApiCallback;
 import com.example.tripbuddy.Adapters.DestinationAdapter;
+import com.example.tripbuddy.Adapters.UserSession;
+import com.example.tripbuddy.Models.BookMarkDestination;
+import com.example.tripbuddy.Models.Destination;
+import com.example.tripbuddy.ViewModel.BookMarkViewModel;
+import com.example.tripbuddy.ViewModel.DestinationViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
-import com.example.tripbuddy.Models.Destination;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+public class BookmarkedActivity extends AppCompatActivity {
 
-public class BookmarkedActivity extends AppCompatActivity implements ApiCallback {
-
-    // Initialize destination data
     private List<Destination> destinationList = new ArrayList<>();
     private RecyclerView destinationRecyclerView;
+    private DestinationAdapter destinationAdapter;
+    private DestinationViewModel destinationViewModel;
+    private BookMarkViewModel bookMarkViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,69 +37,51 @@ public class BookmarkedActivity extends AppCompatActivity implements ApiCallback
 
         // Initialize RecyclerView
         destinationRecyclerView = findViewById(R.id.destinationRecyclerView);
+        destinationRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
-        // Set GridLayoutManager with 2 columns
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
-        destinationRecyclerView.setLayoutManager(gridLayoutManager);
-
-        // Load Destination Data
-        loadDestinationData();
-
-        // Set Adapter
-        DestinationAdapter destinationAdapter = new DestinationAdapter(destinationList, this); // Pass activity context to the adapter
+        // Initialize the adapter and set it to the RecyclerView
+        destinationAdapter = new DestinationAdapter(destinationList, this);
         destinationRecyclerView.setAdapter(destinationAdapter);
 
-        // Set back button and cancel button
-        AtomicReference<ImageView> backButton = new AtomicReference<>(findViewById(R.id.backButton));
-        backButton.get().setOnClickListener(this::onClick);
+        // Initialize DestinationViewModel
+        destinationViewModel = new ViewModelProvider(this).get(DestinationViewModel.class);
 
+        // Load bookmarked destinations
+        loadBookmarkedDestinations();
+
+        // Set up back button
+        ImageView backButton = findViewById(R.id.backButton);
+        backButton.setOnClickListener(this::onBackButtonClick);
     }
 
-    private void onClick(View view) {
-        Intent intent  = new Intent(this.getApplicationContext(), MainActivity.class);
-        startActivity(intent);
-    }
+    private void loadBookmarkedDestinations() {
+        int userId = UserSession.getInstance().getUser().getUserId();
+        BookMarkViewModel bookMarkViewModel = new ViewModelProvider(this).get(BookMarkViewModel.class);
+        // Observe the list of bookmarked destinations for the user
+        bookMarkViewModel.getUserBookmarks(userId).observe(this, bookmarkedDestinations -> {
+            if (bookmarkedDestinations != null && !bookmarkedDestinations.isEmpty()) {
+                for (BookMarkDestination bookmark : bookmarkedDestinations) {
+                    int destinationId = bookmark.getDestinationId();
 
-    // This method will load dummy data, replace it with real data fetching logic
-    private void loadDestinationData() {
-        // API URL for getting the list of users
-        String apiUrl = "http://localhost:5000/api/Place";  // Replace with your local or server URL
-        new ApiCallTask(this).execute(apiUrl);
-    }
-
-    @Override
-    public void onSuccess(String result) {
-        updateUserList(result);
-    }
-
-    @Override
-    public void onError(String error) {
-        Toast.makeText(this, "Error fetching Destinations: " + error, Toast.LENGTH_SHORT).show();
-    }
-
-    private void updateUserList(String jsonResult) {
-        try {
-            JSONArray jsonArray = new JSONArray(jsonResult);
-            destinationList.clear(); // Clear the previous data
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject desObject = jsonArray.getJSONObject(i);
-                String id = desObject.getString("PlcKey");
-                String name = desObject.getString("PlcName");
-                String description = desObject.getString("Description");
-                double longitude = desObject.getDouble("Description");
-                double latitude = desObject.getDouble("Description");
-
-                Destination destination = new Destination(id, name, description, R.drawable.sample_destination, longitude, latitude);
-                destinationList.add(destination); // Add to the list
+                    // Fetch and observe each destination's details
+                    destinationViewModel.getDestinationById(destinationId).observe(this, destination -> {
+                        if (destination != null) {
+                            destinationList.add(destination);
+                            destinationAdapter.notifyDataSetChanged();
+                        } else {
+                            Toast.makeText(BookmarkedActivity.this, "Destination not found", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            } else {
+                Toast.makeText(this, "No bookmarked destinations found", Toast.LENGTH_SHORT).show();
             }
-            // Setup adapter
-            DestinationAdapter destinationAdapter = new DestinationAdapter(destinationList, this);
-            destinationRecyclerView.setAdapter(destinationAdapter);
-            destinationAdapter.notifyDataSetChanged(); // Notify the adapter to refresh the list
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Failed to parse user data", Toast.LENGTH_SHORT).show();
-        }
+        });
+    }
+
+
+    private void onBackButtonClick(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }

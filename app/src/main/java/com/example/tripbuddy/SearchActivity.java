@@ -1,6 +1,8 @@
 package com.example.tripbuddy;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,28 +13,25 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.tripbuddy.API.ApiCallTask;
-import com.example.tripbuddy.API.ApiCallback;
 import com.example.tripbuddy.Adapters.DestinationAdapter;
+import com.example.tripbuddy.Models.Destination;
+import com.example.tripbuddy.ViewModel.DestinationViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
-import com.example.tripbuddy.Models.Destination;
+public class SearchActivity extends Fragment {
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-public class SearchActivity extends Fragment implements ApiCallback {
-
-    // Initialize destination data
-    private List<Destination> destinationList = new ArrayList<>();
+    private DestinationViewModel destinationViewModel;
     private RecyclerView destinationRecyclerView;
+    private DestinationAdapter destinationAdapter;
+    private List<Destination> allDestinations = new ArrayList<>();
 
     public SearchActivity() {
         // Required empty public constructor
@@ -46,100 +45,75 @@ public class SearchActivity extends Fragment implements ApiCallback {
 
         // Initialize RecyclerView
         destinationRecyclerView = view.findViewById(R.id.destinationRecyclerView);
+        destinationRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
-        // Set GridLayoutManager with 2 columns
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);  // Use getContext() or requireContext()
-        destinationRecyclerView.setLayoutManager(gridLayoutManager);
+        // Initialize ViewModel
+        destinationViewModel = new ViewModelProvider(this).get(DestinationViewModel.class);
 
-        // Load Destination Data
-        loadDestinationData();
+        // Observe all destinations
+        destinationViewModel.getAllDestinations().observe(getViewLifecycleOwner(), new Observer<List<Destination>>() {
+            @Override
+            public void onChanged(List<Destination> destinations) {
+                allDestinations.clear();
+                allDestinations.addAll(destinations);
+                updateRecyclerView(destinations);
+            }
+        });
 
         // Set Adapter
-        DestinationAdapter destinationAdapter = new DestinationAdapter(destinationList, getContext());  // Pass context to the adapter
+        destinationAdapter = new DestinationAdapter(allDestinations, getContext());
         destinationRecyclerView.setAdapter(destinationAdapter);
 
-        // Set back button and cancel button
+        // Set search bar listener
+        TextView searchBar = view.findViewById(R.id.searchBar);
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
-        // Set search all text
-        AtomicReference<ImageView> backButton = new AtomicReference<>(view.findViewById(R.id.backButton));
-        backButton.get().setOnClickListener(this::onClick);
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterDestinations(s.toString());
+            }
 
+            @Override
+            public void afterTextChanged(Editable s) { }
+        });
+
+        // Set back button
+        ImageView backButton = view.findViewById(R.id.backButton);
+        backButton.setOnClickListener(this::onClick);
+
+        // Set cancel button
         TextView cancelButton = view.findViewById(R.id.textCancel);
         cancelButton.setOnClickListener(this::onClick);
 
-        TextView searchBar = view.findViewById(R.id.searchBar);
-        ImageView searchButton = view.findViewById(R.id.searchIcon);
-
-        searchBar.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                // Hide RecyclerView when search bar is focused
-                destinationRecyclerView.setVisibility(View.GONE);
-            } else {
-                // Show RecyclerView when search bar loses focus
-                destinationRecyclerView.setVisibility(View.VISIBLE);
-            }
-        });
-
-        searchButton.setOnClickListener(view1 -> {
-            /* Toggle visibility of RecyclerView based on focus */
-            destinationRecyclerView.setVisibility(view1.hasFocus() ? View.GONE : View.VISIBLE);
-            searchBar.clearFocus();
-        });
         return view;
     }
 
-    // This method will load dummy data, replace it with real data fetching logic
-    private void loadDestinationData() {
-        // API URL for getting the list of users
-        String apiUrl = "https://localhost:5000/api/places";  // Replace with your local or server URL
-        new ApiCallTask(this).execute(apiUrl);
+    private void updateRecyclerView(List<Destination> destinations) {
+        destinationAdapter.notifyDataSetChanged();
     }
 
-    @Override
-    public void onSuccess(String result) {
-        updateUserList(result);
-    }
-
-    @Override
-    public void onError(String error) {
-        Toast.makeText(getContext(), "Error fetching Destinations: " + error, Toast.LENGTH_SHORT).show();
-    }
-
-    private void updateUserList(String jsonResult) {
-        try {
-            JSONArray jsonArray = new JSONArray(jsonResult);
-            destinationList.clear(); // Clear the previous data
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject desObject = jsonArray.getJSONObject(i);
-                String id = desObject.getString("PlcKey");
-                String name = desObject.getString("PlcName");
-                String description = desObject.getString("Description");
-                double longitude = desObject.getDouble("Description");
-                double latitude = desObject.getDouble("Description");
-
-                Destination destination = new Destination(id, name, description, R.drawable.sample_destination, longitude, latitude);
-                destinationList.add(destination); // Add to the list
+    private void filterDestinations(String query) {
+        List<Destination> filteredList = new ArrayList<>();
+        for (Destination destination : allDestinations) {
+            if (destination.getName().toLowerCase().contains(query.toLowerCase())) {
+                filteredList.add(destination);
             }
-            // Setup adapter
-            DestinationAdapter destinationAdapter = new DestinationAdapter(destinationList, getContext());
-            destinationRecyclerView.setAdapter(destinationAdapter);
-            destinationAdapter.notifyDataSetChanged(); // Notify the adapter to refresh the list
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(getContext(), "Failed to parse user data", Toast.LENGTH_SHORT).show();
         }
+        destinationAdapter = new DestinationAdapter(filteredList, getContext());
+        destinationRecyclerView.setAdapter(destinationAdapter);
     }
+
     private void onClick(View v) {
-        // Chuyển đổi sang SecondFragment
         HomeActivity secondFragment = new HomeActivity();
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_container, secondFragment) // fragment_container là ID của container trong Activity
-                .addToBackStack(null) // Tùy chọn thêm vào backstack để quay lại fragment trước đó
+                .replace(R.id.fragment_container, secondFragment)
+                .addToBackStack(null)
                 .commit();
 
-        // Cập nhật mục đã chọn trên BottomNavigationView
+        // Update selected item on BottomNavigationView
         BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setSelectedItemId(R.id.home);
     }

@@ -1,4 +1,5 @@
 package com.example.tripbuddy.Adapters;
+
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -12,13 +13,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tripbuddy.DestinationDetailActivity;
 import com.example.tripbuddy.R;
+import com.example.tripbuddy.Models.Destination;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
-import com.example.tripbuddy.Models.Destination;
 
 public class DestinationAdapter extends RecyclerView.Adapter<DestinationAdapter.ViewHolder> {
-    public List<Destination> destinationList;
-    public Context context;
+    private List<Destination> destinationList;
+    private Context context;
 
     public DestinationAdapter(List<Destination> destinationList, Context context) {
         this.destinationList = destinationList;
@@ -36,16 +38,24 @@ public class DestinationAdapter extends RecyclerView.Adapter<DestinationAdapter.
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Destination destination = destinationList.get(position);
         holder.destinationName.setText(destination.getName());
-        holder.destinationImage.setImageResource(destination.getImageResId());  // Assuming you are using drawable resources.
+        holder.destinationLocation.setText(destination.getLocation());
+
+        // Load image from URL using Glide
+        Glide.with(context)
+                .load(destination.getImageResId()) // Assuming imageResId is a URL
+                .placeholder(R.drawable.sample_destination) // Placeholder image while loading
+                .into(holder.destinationImage);
 
         // Handle click event on each destination item
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, DestinationDetailActivity.class);
-            intent.putExtra("destinationTitle", destination.getName());
-            intent.putExtra("destinationImage", R.drawable.example_detail);
-            intent.putExtra("destinationDescription", destination.getLocation());
-            intent.putExtra("destinationShortDescription", "12345");
-            intent.putExtra("destinationFullDescription", "123456789");
+            intent.putExtra("destinationName", destination.getName());
+            intent.putExtra("destinationId", destination.getId());
+            intent.putExtra("destinationLocation", destination.getLocation());
+            intent.putExtra("destinationImageUrl", destination.getImageResId());
+            intent.putExtra("destinationDescription", destination.getDescription());
+            intent.putExtra("destinationLatitude", destination.getLatitude());
+            intent.putExtra("destinationLongitude", destination.getLongitude());
             context.startActivity(intent);
         });
     }
@@ -56,7 +66,8 @@ public class DestinationAdapter extends RecyclerView.Adapter<DestinationAdapter.
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView destinationName, destinationLocation;
+        TextView destinationName;
+        TextView destinationLocation;
         ImageView destinationImage;
 
         public ViewHolder(@NonNull View itemView) {

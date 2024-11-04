@@ -5,103 +5,61 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.tripbuddy.API.ApiCallTask;
-import com.example.tripbuddy.API.ApiCallback;
-import com.example.tripbuddy.Adapters.DestinationAdapter;
-
-import java.util.ArrayList;
+import com.example.tripbuddy.Adapters.HistoryAdapter;
+import com.example.tripbuddy.Adapters.UserSession;
+import com.example.tripbuddy.Models.History;
+import com.example.tripbuddy.ViewModel.DestinationViewModel;
+import com.example.tripbuddy.ViewModel.HistoryViewModel;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
-import com.example.tripbuddy.Models.Destination;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+public class HistoryActivity extends AppCompatActivity {
 
-public class HistoryActivity extends AppCompatActivity implements ApiCallback {
+    private HistoryAdapter historyAdapter;
+    private HistoryViewModel historyViewModel;
+    private DestinationViewModel destinationViewModel;
 
-    // Initialize destination data
-    private List<Destination> destinationList = new ArrayList<>();
-    private RecyclerView destinationRecyclerView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
-        // Initialize RecyclerView
-        destinationRecyclerView = findViewById(R.id.destinationRecyclerView);
+        // Initialize RecyclerView and Adapter
+        RecyclerView recyclerViewHistory = findViewById(R.id.recyclerViewHistory);
+        recyclerViewHistory.setLayoutManager(new LinearLayoutManager(this));
 
-        // Set GridLayoutManager with 2 columns
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
-        destinationRecyclerView.setLayoutManager(gridLayoutManager);
+        // Initialize ViewModels
+        destinationViewModel = new ViewModelProvider(this).get(DestinationViewModel.class);
+        historyViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
 
-        // Load Destination Data
-        loadDestinationData();
+        // Initialize Adapter with DestinationViewModel and LifecycleOwner
+        historyAdapter = new HistoryAdapter(destinationViewModel, this);
+        recyclerViewHistory.setAdapter(historyAdapter);
 
-        // Set Adapter
-        DestinationAdapter destinationAdapter = new DestinationAdapter(destinationList, this); // Pass activity context to the adapter
-        destinationRecyclerView.setAdapter(destinationAdapter);
-
-        // Set back button and cancel button
-        AtomicReference<ImageView> backButton = new AtomicReference<>(findViewById(R.id.backButton));
-        backButton.get().setOnClickListener(this::onClick);
+        // Set up navigation buttons
+        ImageView backButton = findViewById(R.id.backButton);
+        backButton.setOnClickListener(this::navigateToMainActivity);
 
         TextView cancelButton = findViewById(R.id.textCancel);
-        cancelButton.setOnClickListener(this::onClick);
+        cancelButton.setOnClickListener(this::navigateToMainActivity);
 
+        // Observe History Data
+        observeHistoryData();
     }
 
-    private void onClick(View view) {
-        Intent intent  = new Intent(this.getApplicationContext(), MainActivity.class);
-        startActivity(intent);
+    private void observeHistoryData() {
+        historyViewModel.getHistoryByUserId(UserSession.getInstance().getUser().getUserId())
+                .observe(this, this::updateHistoryList);
     }
 
-    // This method will load dummy data, replace it with real data fetching logic
-    private void loadDestinationData() {
-        // API URL for getting the list of users
-        String apiUrl = "http://localhost:5000/api/Place";  // Replace with your local or server URL
-        new ApiCallTask(this).execute(apiUrl);
+    private void updateHistoryList(List<History> historyList) {
+        historyAdapter.setHistoryList(historyList);
     }
 
-    @Override
-    public void onSuccess(String result) {
-        updateUserList(result);
+    private void navigateToMainActivity(View view) {
+        startActivity(new Intent(this, MainActivity.class));
     }
-
-    @Override
-    public void onError(String error) {
-        Toast.makeText(this, "Error fetching Destinations: " + error, Toast.LENGTH_SHORT).show();
-    }
-
-    private void updateUserList(String jsonResult) {
-        try {
-            JSONArray jsonArray = new JSONArray(jsonResult);
-            destinationList.clear(); // Clear the previous data
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject desObject = jsonArray.getJSONObject(i);
-                String id = desObject.getString("PlcKey");
-                String name = desObject.getString("PlcName");
-                String description = desObject.getString("Description");
-                double longitude = desObject.getDouble("Description");
-                double latitude = desObject.getDouble("Description");
-
-                Destination destination = new Destination(id, name, description, R.drawable.sample_destination, longitude, latitude);
-                destinationList.add(destination); // Add to the list
-            }
-            // Setup adapter
-            DestinationAdapter destinationAdapter = new DestinationAdapter(destinationList, this);
-            destinationRecyclerView.setAdapter(destinationAdapter);
-            destinationAdapter.notifyDataSetChanged(); // Notify the adapter to refresh the list
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Failed to parse user data", Toast.LENGTH_SHORT).show();
-        }
-    }
-
 }

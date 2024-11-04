@@ -8,36 +8,39 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.lifecycle.ViewModelProvider;
+import com.example.tripbuddy.ViewModel.UserViewModel;
 import com.example.tripbuddy.Adapters.UserSession;
 
 public class LoginActivity extends AppCompatActivity {
 
-    EditText emailEditText, passwordEditText;
-    Button signInButton;
-    TextView signUpButton, forgotPasswordText;
-    ImageView backButton;
+    private EditText usernameEditText, passwordEditText;
+    private Button signInButton;
+    private TextView signUpButton, forgotPasswordText;
+    private UserViewModel userViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        emailEditText = findViewById(R.id.emailEditText);
+        usernameEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         signInButton = findViewById(R.id.signInButton);
         signUpButton = findViewById(R.id.signUpPrompt);
-        forgotPasswordText  = findViewById(R.id.forgotPasswordText);
+        forgotPasswordText = findViewById(R.id.forgotPasswordText);
+
+        // Initialize ViewModel
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
         signInButton.setOnClickListener(view -> {
-            String email = emailEditText.getText().toString();
+            String username = usernameEditText.getText().toString();
             String password = passwordEditText.getText().toString();
 
-            if (email.isEmpty() || password.isEmpty()) {
+            if (username.isEmpty() || password.isEmpty()) {
                 Toast.makeText(LoginActivity.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             } else {
-                // Call API to authenticate user (Retrofit or HttpUrlConnection)
-                loginUser(email, password);
+                loginUser(username, password);
             }
         });
 
@@ -52,14 +55,20 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void loginUser(String email, String password) {
-        // Implement API call to your C# backend here
-        // For example, using Retrofit or another HTTP library
-        Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        // Set email in UserSession
-        UserSession.getInstance().setEmail(email);
-        intent.putExtra("name", email);
-        startActivity(intent);
+    private void loginUser(String username, String password) {
+        // Use ViewModel to fetch user details
+        userViewModel.getUser(username, password).observe(this, user -> {
+            if (user != null) {
+                Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+
+                // Set username in UserSession
+                UserSession.getInstance().setUser(user);
+                intent.putExtra("name", username);
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Invalid username or password", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

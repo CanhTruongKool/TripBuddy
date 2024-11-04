@@ -1,173 +1,207 @@
 package com.example.tripbuddy;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
-import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.View;
-import android.view.Window;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.lifecycle.ViewModelProvider;
 
-import com.example.tripbuddy.Adapters.ImageAdapter;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.bumptech.glide.Glide;
+import com.example.tripbuddy.Adapters.UserSession;
+import com.example.tripbuddy.ViewModel.BookMarkViewModel;
+import com.example.tripbuddy.ViewModel.ReviewViewModel;
+import com.example.tripbuddy.ViewModel.ScheduleViewModel;
+import com.example.tripbuddy.ViewModel.UserViewModel;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Objects;
 
 public class DestinationDetailActivity extends AppCompatActivity {
-
+    private ReviewViewModel reviewViewModel;
     private boolean isExpanded = false;
+    private ScheduleViewModel scheduleViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_destination_detail);
 
-        TextView aboutDescription = findViewById(R.id.aboutDescription);
-        TextView destinationTitle = findViewById(R.id.destinationTitle);
-        ImageView headerImage = findViewById(R.id.headerImage);
         ImageView backButton = findViewById(R.id.backButton);
-
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        // Initialize the list of images (you can fetch this dynamically)
-        List<Integer> imageList = new ArrayList<>();
-        imageList.add(R.drawable.example_detail); // Replace with your image resource IDs
-        imageList.add(R.drawable.example_detail);
-        imageList.add(R.drawable.example_detail);
-        ImageAdapter imageAdapter = new ImageAdapter(this, imageList);
-        recyclerView.setAdapter(imageAdapter);
+        backButton.setOnClickListener(view -> finish());
 
         // Get data from the intent
         Intent intent = getIntent();
-        String title = intent.getStringExtra("destinationTitle");
-        int imageResId = intent.getIntExtra("destinationImage", -1);
-        String shortDescription = intent.getStringExtra("destinationShortDescription");
-        String fullDescription = intent.getStringExtra("destinationFullDescription");
+        String destinationName = intent.getStringExtra("destinationName");
+        int destinationId = intent.getIntExtra("destinationId", 0);
+        String destinationLocation = intent.getStringExtra("destinationLocation");
+        String destinationImageUrl = intent.getStringExtra("destinationImageUrl");
+        String destinationDescription = intent.getStringExtra("destinationDescription");
+        double destinationLatitude = intent.getDoubleExtra("destinationLatitude", 0);
+        double destinationLongitude = intent.getDoubleExtra("destinationLongitude", 0);
 
-        // Set initial data
-        destinationTitle.setText(title);
-        if (imageResId != -1) {
-            headerImage.setImageResource(imageResId);
-        }
-
-        // Set short description and configure "Read more..."
-        if (shortDescription != null && fullDescription != null) {
-            aboutDescription.setText(shortDescription); // Set the short description initially
-            aboutDescription.setText(addClickablePartTextViewResizable(shortDescription, fullDescription, aboutDescription, "Read more..."));
-            aboutDescription.setMovementMethod(LinkMovementMethod.getInstance()); // Make links clickable
-        }
-
-        // Back button
-        backButton.setOnClickListener(view -> {
-            Intent intentBack = new Intent(DestinationDetailActivity.this, MainActivity.class);
-            startActivity(intentBack);
-        });
-
+        // Set the data to the views
+        TextView titleTextView = findViewById(R.id.destinationTitle);
         TextView locationTextView = findViewById(R.id.location);
+        TextView aboutDescription = findViewById(R.id.aboutDescription);
+        ImageView headerImage = findViewById(R.id.headerImage);
 
-        // Set the click listener for the location TextView
-        locationTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openGoogleMaps();
-            }
+        titleTextView.setText(destinationName);
+        locationTextView.setText(destinationLocation);
+        Glide.with(this).load(destinationImageUrl).into(headerImage);
+
+        String shortDescription = destinationDescription.length() > 20 ? destinationDescription.substring(0, 20) + "..." : destinationDescription;
+
+        aboutDescription.setText(addClickablePartTextViewResizable(shortDescription, destinationDescription, aboutDescription, "Read more..."));
+        aboutDescription.setMovementMethod(LinkMovementMethod.getInstance());
+
+
+        // Combine the average rating and number of ratings
+        TextView ratingText = findViewById(R.id.ratingText);
+
+        // Set an OnClickListener to show the full-screen image when clicked
+        headerImage.setOnClickListener(v -> showFullScreenImage(destinationImageUrl));
+
+        locationTextView.setOnClickListener(v -> openGoogleMaps(destinationLatitude, destinationLongitude));
+
+        ratingText.setOnClickListener(v -> {
+            Intent reviewsIntent = new Intent(DestinationDetailActivity.this, ReviewsActivity.class);
+            reviewsIntent.putExtra("destinationId", destinationId); // Pass the destination ID
+            reviewsIntent.putExtra("destinationName", destinationName); // Pass the name for display
+            startActivity(reviewsIntent);
         });
 
-        // Review Action
-        TextView reviewTextView = findViewById(R.id.ratingText);
-        reviewTextView.setOnClickListener(v ->{
-            Intent intentReview = new Intent(DestinationDetailActivity.this, ReviewsActivity.class);
-            intentReview.putExtra("destinationName",title );
-            startActivity(intentReview);
+        BookMarkViewModel bookMarkViewModel = new ViewModelProvider(this).get(BookMarkViewModel.class);
+
+        ImageView bookmarkBtn = findViewById(R.id.bookmarkIcon);
+        bookmarkBtn.setOnClickListener(view -> {
+            // Assume you have the userId and destinationId
+            bookMarkViewModel.addBookmark(destinationId, UserSession.getInstance().getUser().getUserId());
+            Toast.makeText(this, "Bookmarked!", Toast.LENGTH_SHORT).show();
         });
 
+        Button addToScheduleButton = findViewById(R.id.addToScheduleButton);
+        addToScheduleButton.setOnClickListener(v ->{
+            showAddToScheduleDialog(UserSession.getInstance().getUser().getUserId(), destinationId);
+        });
     }
 
     private SpannableStringBuilder addClickablePartTextViewResizable(final String shortDescription, final String fullDescription,
                                                                      final TextView textView, final String expandableText) {
-        // Create a SpannableStringBuilder with short description plus the expandable text
         SpannableStringBuilder ssb = new SpannableStringBuilder(shortDescription + " " + expandableText);
 
-        // Add a ClickableSpan to the expandable text
         if (ssb.toString().contains(expandableText)) {
             ssb.setSpan(new ClickableSpan() {
                 @Override
                 public void onClick(@NonNull View widget) {
-                    // Toggle between expanded and collapsed states
-                    if (!isExpanded) {
-                        // Expand text and update text view
-                        textView.setText(String.format("%s Read less", fullDescription));
-                        textView.setMaxLines(Integer.MAX_VALUE);  // Show full description
-                        textView.setEllipsize(null);  // Remove ellipsis
-                        isExpanded = true;
-                    } else {
-                        // Collapse text and update text view
-                        textView.setText(String.format("%s %s", shortDescription, expandableText)); // Set short description with "Read more"
-                        textView.setMaxLines(3);  // Limit text to 3 lines
-                        textView.setEllipsize(TextUtils.TruncateAt.END);  // Show ellipsis
-                        isExpanded = false;
-                    }
-
-                    // Reapply the clickable span after text is set
-                    textView.setText(addClickablePartTextViewResizable(
-                            fullDescription,
-                            shortDescription,
-                            textView,
-                            isExpanded ? "Read less" : "Read more..."));
-                    textView.setMovementMethod(LinkMovementMethod.getInstance());  // Make links clickable
+                    toggleDescription(textView, shortDescription, fullDescription, expandableText);
                 }
 
                 @Override
                 public void updateDrawState(TextPaint ds) {
                     super.updateDrawState(ds);
-                    ds.setColor(Color.parseColor("#397D54"));  // Change link color
-                    ds.setUnderlineText(false);  // Remove underline
+                    ds.setColor(getResources().getColor(R.color.ic_launcher_background)); // Update color based on your theme
+                    ds.setUnderlineText(false);
                 }
-            }, shortDescription.length() + 1, ssb.length(), 0); // Set span for clickable text
+            }, shortDescription.length() + 1, ssb.length(), 0);
         }
         return ssb;
     }
 
-    private void openGoogleMaps() {
-        // Example location coordinates (latitude and longitude)
-        double latitude = 13.803869539638479;  // Replace with your location's latitude
-        double longitude = 109.21914813886895; // Replace with your location's longitude
+    private void toggleDescription(TextView textView, String shortDescription, String fullDescription, String expandableText) {
+        if (!isExpanded) {
+            textView.setText(String.format("%s Read less", fullDescription));
+            isExpanded = true;
+        } else {
+            textView.setText(String.format("%s %s", shortDescription, expandableText));
+            isExpanded = false;
+        }
 
-        // Create a URI for the location
+        textView.setText(addClickablePartTextViewResizable(
+                fullDescription,
+                shortDescription,
+                textView,
+                isExpanded ? "Read less" : "Read more..."));
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    private void openGoogleMaps(double latitude, double longitude) {
         String uri = "geo:" + latitude + "," + longitude + "?q=" + latitude + "," + longitude;
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-        intent.setPackage("com.google.android.apps.maps"); // Ensure it opens in Google Maps
+        intent.setPackage("com.google.android.apps.maps");
         startActivity(intent);
     }
 
-    public void showFullScreenImage(int imageResId) {
-        // Create a dialog for the full-screen image
-        final Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // Remove title
-        dialog.setContentView(R.layout.dialog_full_screen_image); // Layout for the dialog
-        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawableResource(android.R.color.transparent); // Set transparent background
+    public void showFullScreenImage(String imageUrl) {
+        final Dialog dialog = new Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen); // Set to full screen
+        dialog.setContentView(R.layout.dialog_full_screen_image);
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawableResource(android.R.color.transparent); // Make background transparent
 
-        // Find the ImageView in the dialog layout and set the image
         ImageView fullScreenImageView = dialog.findViewById(R.id.fullScreenImageView);
-        fullScreenImageView.setImageResource(imageResId);
+        Glide.with(this).load(imageUrl).into(fullScreenImageView); // Load the image with Glide
+        fullScreenImageView.setOnClickListener(v -> dialog.dismiss()); // Dismiss the dialog when clicked
 
-        // Set the dialog to dismiss when the image is clicked
-        fullScreenImageView.setOnClickListener(v -> dialog.dismiss());
+        dialog.show();
+    }
+
+    private void showAddToScheduleDialog(int userId, int destinationId) {
+        // Inflate the custom dialog layout
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_to_schedule, null);
+        scheduleViewModel = new ViewModelProvider(this).get(ScheduleViewModel.class);
+
+        // Initialize the DatePicker and TimePicker
+        DatePicker datePicker = dialogView.findViewById(R.id.datePicker);
+        TimePicker timePicker = dialogView.findViewById(R.id.timePicker);
+        timePicker.setIs24HourView(true); // Optional: Set 24-hour format
+
+        // Create the AlertDialog
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setTitle("Add to Schedule")
+                .setNegativeButton("Cancel", (d, which) -> d.dismiss())
+                .create();
+
+        // Handle "Add to Schedule" button click
+        Button buttonAddToSchedule = dialogView.findViewById(R.id.buttonAddToSchedule);
+        buttonAddToSchedule.setOnClickListener(v -> {
+            // Get selected date
+            int year = datePicker.getYear();
+            int month = datePicker.getMonth();
+            int day = datePicker.getDayOfMonth();
+            LocalDate date = LocalDate.of(year, month + 1, day); // Month is 0-based
+            // Get selected time
+            int hour = timePicker.getHour();
+            int minute = timePicker.getMinute();
+            LocalTime time = LocalTime.of(hour, minute);
+
+            // Add to Schedule using ViewModel
+            scheduleViewModel.addSchedule(userId, destinationId, date, time);
+
+            // Show confirmation message
+            Toast.makeText(this, "Added to schedule", Toast.LENGTH_SHORT).show();
+
+            // Dismiss dialog
+            dialog.dismiss();
+        });
 
         // Show the dialog
         dialog.show();
     }
+
 }
